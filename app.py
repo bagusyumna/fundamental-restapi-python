@@ -1,14 +1,17 @@
-from flask import Flask, jsonify
+from flask import Flask
+from flask_restful import Api
+from database.db import initialize_db
+from resources.errors import errors
+
 
 app = Flask(__name__)
+app.config['MONGODB_SETTINGS'] = {
+    'host': 'mongodb://localhost/product-database'
+}
 
-a = {'a':'coba flask', 'b':'coba mongodb', 'c':'coba reatapi'}
+from resources.routes import initialize_routes
 
+api = Api(app, errors=errors)
 
-@app.route('/')
-def tes():
-    return jsonify(a)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+initialize_db(app)
+initialize_routes(api)
